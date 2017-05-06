@@ -53,7 +53,7 @@ namespace Saper
                 for (int j = 0; j < columnCount; j++)
                 {
                     Button button = new Button();
-                    button.Name = string.Format("{0}{1}", i, j);
+                    button.Name = string.Format("B_{0}{1}", i, j);
                     Grid.SetRow(button, i);
                     Grid.SetColumn(button, j);
                     MainGrid.Children.Add(button);
