@@ -1,0 +1,10 @@
+Autor: Mieszko Sul¿ycki
+Temat: Saper
+Technologia: WPF
+
+Opis:
+
+Wszystkim bardzo dobrze znana gra Saper, dostêpna domyœlnie miêdzy innymi w systemie Windows XP.
+W grze bêd¹ dostêpne 3 poziomy trudnoœci, które bêd¹ siêró¿niæ iloœci¹ pól do odkrycia i min do oznaczenia.
+Gra bêdzie zlicza³a i na bierz¹co pokazywa³a iloœæ pozosta³ych min.
+Bêdzie mo¿liwoœæ personalizacji i zmiany t³a w oknie gry.
