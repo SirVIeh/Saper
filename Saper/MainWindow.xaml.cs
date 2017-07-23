@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Saper
 {
@@ -46,16 +39,20 @@ namespace Saper
         public void DrawLevel()
         {
             #region Clearing Level
+
             MainGrid.Children.Clear();
             if (MainGrid.RowDefinitions.Count > 0 && MainGrid.ColumnDefinitions.Count > 0)
             {
                 MainGrid.RowDefinitions.RemoveRange(0, MainGrid.RowDefinitions.Count - 1);
                 MainGrid.ColumnDefinitions.RemoveRange(0, MainGrid.ColumnDefinitions.Count - 1);
             }
+            Buttons.Clear();
             ColumnCount = 0;
+
             #endregion
 
             #region Setting Difficulty and Placing Mines
+
             switch (Difficulty)
             {
                 case Level.Easy:
@@ -71,9 +68,11 @@ namespace Saper
                     PlaceMines();
                     break;
             }
+
             #endregion
 
             #region Adding Buttons To Level
+
             for (int i = 0; i < ColumnCount; i++)
             {
                 ColumnDefinition column = new ColumnDefinition();
@@ -99,6 +98,7 @@ namespace Saper
                     MainGrid.Children.Add(button);
                 }
             }
+
             #endregion
         }
 
@@ -141,15 +141,15 @@ namespace Saper
                 }
                 else
                 {
-                    //policzyć ile min wokół tego jest i wstawić
                     int minesAround = FindMinesAround(x, y);
+                    if (minesAround == 0)
+                        ShowAllNearEmptyFields(x, y);
                     b.Background = Brushes.White;
                     b.Foreground = Brushes.Black;
                     if (minesAround > 0)
                         b.Content = minesAround;
                 }
             }
-            //MessageBox.Show(b.Name + "Have i mine ? = " + hasMine);
         }
 
         private void Difficulty_onClick(object sender, RoutedEventArgs e)
@@ -172,9 +172,37 @@ namespace Saper
             DrawLevel();
         }
 
+        private void NewGame_onClick(object sender, RoutedEventArgs e)
+        {
+            DrawLevel();
+        }
+
         #endregion
 
         #region Private Methods
+
+        private void ShowAllNearEmptyFields(int x, int y)
+        {
+            for (int i = x - 1; i <= x + 1; i++)
+            {
+                for (int j = y - 1; j <= y + 1; j++)
+                {
+                    if ((i >= 0 && i < ColumnCount) && (j < ColumnCount && j >= 0))
+                    {
+                        int index = Buttons.FindIndex(0, Buttons.Count - 1,
+                                    button => button.Name == string.Format("B_{0}{1}", i, j));
+                        if (index < 0)
+                        {
+                            index = Convert.ToInt32(string.Format("" + i + j));
+                        }
+                        Buttons[index].Background = Brushes.White;
+                        Buttons[index].Foreground = Brushes.Black;
+                        if (FindMinesAround(i, j) > 0)
+                            Buttons[index].Content = FindMinesAround(i, j);
+                    }
+                }
+            }
+        }
 
         private void Win()
         {

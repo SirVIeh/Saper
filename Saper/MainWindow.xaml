@@ -7,7 +7,7 @@
     <Grid>
         <DockPanel Height="20" VerticalAlignment="Top">
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="_New Game"></MenuItem>
+                <MenuItem Click="NewGame_onClick"  Header="_New Game"></MenuItem>
                 <MenuItem Header="_Difficult Level">
                     <MenuItem Header="_Easy" Click="Difficulty_onClick"></MenuItem>
                     <MenuItem Header="_Medium" Click="Difficulty_onClick"></MenuItem>
