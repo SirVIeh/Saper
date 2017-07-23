@@ -23,6 +23,9 @@ namespace Saper
         public enum Level { Easy, Medium, Hard};
         public static Level Difficulty = Level.Easy;
         public List<Button> Buttons = new List<Button>();
+        public bool[,] MineCollection;
+        public int ColumnCount = 0;
+        Random randomMinePlace = new Random();
         public MainWindow()
         {
             InitializeComponent();
@@ -36,21 +39,32 @@ namespace Saper
                 MainGrid.RowDefinitions.RemoveRange(0, MainGrid.RowDefinitions.Count - 1);
                 MainGrid.ColumnDefinitions.RemoveRange(0, MainGrid.ColumnDefinitions.Count - 1);
             }
-            int columnCount = 0;
+            ColumnCount = 0;
             switch (Difficulty)
             {
                 case Level.Easy:
-                    columnCount = 10;
+                    ColumnCount = 10;
+                    MineCollection = new bool[10,10];
+                    for (int i = 0; i < 20; i++)
+                    {
+                        int r1 = randomMinePlace.Next(DateTime.Now.Millisecond%ColumnCount);
+                        int r2 = randomMinePlace.Next(DateTime.Now.Millisecond%ColumnCount);
+                        while (AddMine(ref r1, ref r2))
+                        {
+                            r1 = randomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
+                            r2 = randomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
+                        }
+                    }
                     break;
                 case Level.Medium:
-                    columnCount = 20;
+                    ColumnCount = 20;
                     break;
                 case Level.Hard:
-                    columnCount = 30;
+                    ColumnCount = 30;
                     break;
             }
 
-            for (int i = 0; i < columnCount; i++)
+            for (int i = 0; i < ColumnCount; i++)
             {
                 ColumnDefinition column = new ColumnDefinition();
                 column.Width = new GridLength(1, GridUnitType.Star);
@@ -59,25 +73,54 @@ namespace Saper
                 row.Height = new GridLength(1, GridUnitType.Star);
                 MainGrid.RowDefinitions.Add(row);
             }
-            for (int i = 0; i < columnCount; i++)
+            for (int i = 0; i < ColumnCount; i++)
             {
-                for (int j = 0; j < columnCount; j++)
+                for (int j = 0; j < ColumnCount; j++)
                 {
                     Button button = new Button();
                     button.Name = string.Format("B_{0}{1}", i, j);
                     Grid.SetRow(button, i);
                     Grid.SetColumn(button, j);
                     button.Click += button_Click;
+                    button.MouseUp += button_MouseUp;
+                    button.Background = Brushes.Black;
+                    button.Foreground = Brushes.White;
                     Buttons.Add(button);
                     MainGrid.Children.Add(button);
                 }
             }
         }
 
+        void button_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Button b = (Button)sender;
+            if (e.ChangedButton == MouseButton.Right && b.Content == null && b.Background != Brushes.White)
+            {
+                b.Content = "Flaged";
+            }
+            else if (e.ChangedButton == MouseButton.Right && b.Content == "Flaged")
+            {
+                b.Content = null;
+            }
+        }
+
         void button_Click(object sender, RoutedEventArgs e)
         {
             Button b = (Button) sender;
-            MessageBox.Show(b.Name);
+            var hasMine =
+                MineCollection[Convert.ToInt32(b.Name.Substring(2, 1)), Convert.ToInt32(b.Name.Substring(3, 1))];
+            if (b.Content != "Flaged")
+            {
+                if (hasMine)
+                {
+                    b.Content = "*";
+                }
+                else
+                {
+                    b.Background = Brushes.White;
+                }
+            }
+            //MessageBox.Show(b.Name + "Have i mine ? = " + hasMine);
         }
 
         private void Difficulty_onClick(object sender, RoutedEventArgs e)
@@ -103,6 +146,16 @@ namespace Saper
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             DrawLevel();
+        }
+
+        public bool AddMine(ref int r1, ref int r2)
+        {
+            if (MineCollection[r1, r2] == false)
+            {
+                MineCollection[r1, r2] = true;
+                return true;
+            }
+            return false;
         }
     }
 }
