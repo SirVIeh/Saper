@@ -20,19 +20,32 @@ namespace Saper
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Public Members
+
         public enum Level { Easy, Medium, Hard};
         public static Level Difficulty = Level.Easy;
         public List<Button> Buttons = new List<Button>();
         public bool[,] MineCollection;
         public int ColumnCount = 0;
-        Random randomMinePlace = new Random();
+        public int MinesCount = 0;
+        public Random randomMinePlace = new Random();
+
+        #endregion
+        
+        #region Contructor
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        #endregion
+
+        #region Draw Level
+
         public void DrawLevel()
         {
+            #region Clearing Level
             MainGrid.Children.Clear();
             if (MainGrid.RowDefinitions.Count > 0 && MainGrid.ColumnDefinitions.Count > 0)
             {
@@ -40,30 +53,27 @@ namespace Saper
                 MainGrid.ColumnDefinitions.RemoveRange(0, MainGrid.ColumnDefinitions.Count - 1);
             }
             ColumnCount = 0;
+            #endregion
+
+            #region Setting Difficulty and Placing Mines
             switch (Difficulty)
             {
                 case Level.Easy:
                     ColumnCount = 10;
-                    MineCollection = new bool[10,10];
-                    for (int i = 0; i < 20; i++)
-                    {
-                        int r1 = randomMinePlace.Next(DateTime.Now.Millisecond%ColumnCount);
-                        int r2 = randomMinePlace.Next(DateTime.Now.Millisecond%ColumnCount);
-                        while (AddMine(ref r1, ref r2))
-                        {
-                            r1 = randomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
-                            r2 = randomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
-                        }
-                    }
+                    PlaceMines();
                     break;
                 case Level.Medium:
                     ColumnCount = 20;
+                    PlaceMines();
                     break;
                 case Level.Hard:
                     ColumnCount = 30;
+                    PlaceMines();
                     break;
             }
+            #endregion
 
+            #region Adding Buttons To Level
             for (int i = 0; i < ColumnCount; i++)
             {
                 ColumnDefinition column = new ColumnDefinition();
@@ -89,7 +99,12 @@ namespace Saper
                     MainGrid.Children.Add(button);
                 }
             }
+            #endregion
         }
+
+        #endregion
+
+        #region Mouse Events
 
         void button_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -97,27 +112,41 @@ namespace Saper
             if (e.ChangedButton == MouseButton.Right && b.Content == null && b.Background != Brushes.White)
             {
                 b.Content = "Flaged";
+                MinesCount--;
+                MinesToFindTextBlock.Text = "Mines to find = " + MinesCount;
             }
             else if (e.ChangedButton == MouseButton.Right && b.Content == "Flaged")
             {
                 b.Content = null;
+                MinesCount++;
+                MinesToFindTextBlock.Text = "Mines to find = " + MinesCount;
             }
+            if (MinesCount == 0)
+                Win();
         }
 
         void button_Click(object sender, RoutedEventArgs e)
         {
             Button b = (Button) sender;
+            int x = Convert.ToInt32(b.Name.Substring(2, 1));
+            int y = Convert.ToInt32(b.Name.Substring(3, 1));
             var hasMine =
-                MineCollection[Convert.ToInt32(b.Name.Substring(2, 1)), Convert.ToInt32(b.Name.Substring(3, 1))];
+                MineCollection[x, y];
             if (b.Content != "Flaged")
             {
                 if (hasMine)
                 {
-                    b.Content = "*";
+                    MessageBox.Show("Przegrałeś. Spróbuj ponownie.");
+                    DrawLevel();
                 }
                 else
                 {
+                    //policzyć ile min wokół tego jest i wstawić
+                    int minesAround = FindMinesAround(x, y);
                     b.Background = Brushes.White;
+                    b.Foreground = Brushes.Black;
+                    if (minesAround > 0)
+                        b.Content = minesAround;
                 }
             }
             //MessageBox.Show(b.Name + "Have i mine ? = " + hasMine);
@@ -125,8 +154,8 @@ namespace Saper
 
         private void Difficulty_onClick(object sender, RoutedEventArgs e)
         {
-            var difChoice = (MenuItem) sender;
-            string difName = difChoice.Header.ToString().Substring(1, difChoice.Header.ToString().Count()-1);
+            var difChoice = (MenuItem)sender;
+            string difName = difChoice.Header.ToString().Substring(1, difChoice.Header.ToString().Count() - 1);
 
             switch (difName)
             {
@@ -143,12 +172,50 @@ namespace Saper
             DrawLevel();
         }
 
-        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        #endregion
+
+        #region Private Methods
+
+        private void Win()
         {
-            DrawLevel();
+            MessageBox.Show("You win.\nCongratulations.");
         }
 
-        public bool AddMine(ref int r1, ref int r2)
+        private void PlaceMines()
+        {
+            MinesCount = ColumnCount*2;
+            MinesToFindTextBlock.Text = "Mines to find = " + MinesCount;
+            MineCollection = new bool[ColumnCount, ColumnCount];
+            for (int i = 0; i < MinesCount; i++)
+            {
+                int r1 = randomMinePlace.Next(DateTime.Now.Millisecond % ColumnCount);
+                int r2 = randomMinePlace.Next(DateTime.Now.Millisecond % ColumnCount);
+                while (!AddMine(r1, r2))
+                {
+                    r1 = randomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
+                    r2 = randomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
+                }
+            }
+        }
+
+        private int FindMinesAround(int x, int y)
+        {
+            int minesAround = 0;
+            for (int i = x - 1; i <= x + 1; i++)
+            {
+                for (int j = y - 1; j <= y + 1; j++)
+                {
+                    if ((i >= 0 && i < ColumnCount) && (j < ColumnCount && j >= 0))
+                    {
+                        if (MineCollection[i, j])
+                            minesAround++;
+                    }
+                }
+            }
+            return minesAround;
+        }
+
+        private bool AddMine(int r1, int r2)
         {
             if (MineCollection[r1, r2] == false)
             {
@@ -157,5 +224,16 @@ namespace Saper
             }
             return false;
         }
+
+        #endregion
+
+        #region On Loaded
+
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            DrawLevel();
+        }
+
+        #endregion
     }
 }
