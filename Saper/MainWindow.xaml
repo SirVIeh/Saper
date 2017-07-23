@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Saper.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="900" Width="900" Background="DarkGray">
+        Title="MainWindow" Height="900" Width="900" Background="DarkGray" Loaded="MainWindow_OnLoaded">
 
     
     <Grid>
@@ -9,9 +9,9 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_New Game"></MenuItem>
                 <MenuItem Header="_Difficult Level">
-                    <MenuItem Header="_Easy"></MenuItem>
-                    <MenuItem Header="_Medium"></MenuItem>
-                    <MenuItem Header="_Hard"></MenuItem>
+                    <MenuItem Header="_Easy" Click="Difficulty_onClick"></MenuItem>
+                    <MenuItem Header="_Medium" Click="Difficulty_onClick"></MenuItem>
+                    <MenuItem Header="_Hard" Click="Difficulty_onClick"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>

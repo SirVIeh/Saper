@@ -22,9 +22,20 @@ namespace Saper
     {
         public enum Level { Easy, Medium, Hard};
         public static Level Difficulty = Level.Easy;
+        public List<Button> Buttons = new List<Button>();
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public void DrawLevel()
+        {
+            MainGrid.Children.Clear();
+            if (MainGrid.RowDefinitions.Count > 0 && MainGrid.ColumnDefinitions.Count > 0)
+            {
+                MainGrid.RowDefinitions.RemoveRange(0, MainGrid.RowDefinitions.Count - 1);
+                MainGrid.ColumnDefinitions.RemoveRange(0, MainGrid.ColumnDefinitions.Count - 1);
+            }
             int columnCount = 0;
             switch (Difficulty)
             {
@@ -56,9 +67,42 @@ namespace Saper
                     button.Name = string.Format("B_{0}{1}", i, j);
                     Grid.SetRow(button, i);
                     Grid.SetColumn(button, j);
+                    button.Click += button_Click;
+                    Buttons.Add(button);
                     MainGrid.Children.Add(button);
                 }
             }
+        }
+
+        void button_Click(object sender, RoutedEventArgs e)
+        {
+            Button b = (Button) sender;
+            MessageBox.Show(b.Name);
+        }
+
+        private void Difficulty_onClick(object sender, RoutedEventArgs e)
+        {
+            var difChoice = (MenuItem) sender;
+            string difName = difChoice.Header.ToString().Substring(1, difChoice.Header.ToString().Count()-1);
+
+            switch (difName)
+            {
+                case "Easy":
+                    Difficulty = Level.Easy;
+                    break;
+                case "Medium":
+                    Difficulty = Level.Medium;
+                    break;
+                case "Hard":
+                    Difficulty = Level.Hard;
+                    break;
+            }
+            DrawLevel();
+        }
+
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            DrawLevel();
         }
     }
 }
