@@ -21,10 +21,11 @@ namespace Saper
         public bool[,] MineCollection;
         public int ColumnCount = 0;
         public int MinesCount = 0;
-        public Random randomMinePlace = new Random();
+        public Random RandomMinePlace = new Random();
+        public List<string> FlagedMines = new List<string>();
 
         #endregion
-        
+
         #region Contructor
 
         public MainWindow()
@@ -87,7 +88,7 @@ namespace Saper
                 for (int j = 0; j < ColumnCount; j++)
                 {
                     Button button = new Button();
-                    button.Name = string.Format("B_{0}{1}", i, j);
+                    button.Name = string.Format("B_{0}_{1}", i, j);
                     Grid.SetRow(button, i);
                     Grid.SetColumn(button, j);
                     button.Click += button_Click;
@@ -109,27 +110,31 @@ namespace Saper
         void button_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Button b = (Button)sender;
+            var xy = b.Name.Substring(2, b.Name.Length - 2).Split('_').ToArray();
             if (e.ChangedButton == MouseButton.Right && b.Content == null && b.Background != Brushes.White)
             {
                 b.Content = "Flaged";
+                FlagedMines.Add(string.Format("B_{0}_{1}", xy[0], xy[1]));
                 MinesCount--;
                 MinesToFindTextBlock.Text = "Mines to find = " + MinesCount;
             }
             else if (e.ChangedButton == MouseButton.Right && b.Content == "Flaged")
             {
                 b.Content = null;
+                FlagedMines.Remove(string.Format("B_{0}_{1}", xy[0], xy[1]));
                 MinesCount++;
                 MinesToFindTextBlock.Text = "Mines to find = " + MinesCount;
             }
             if (MinesCount == 0)
-                Win();
+                CheckWinCondition();
         }
 
         void button_Click(object sender, RoutedEventArgs e)
         {
             Button b = (Button) sender;
-            int x = Convert.ToInt32(b.Name.Substring(2, 1));
-            int y = Convert.ToInt32(b.Name.Substring(3, 1));
+            var xy = b.Name.Substring(2, b.Name.Length - 2).Split('_').ToArray();
+            int x = Convert.ToInt32(xy[0]);
+            int y = Convert.ToInt32(xy[1]);
             var hasMine =
                 MineCollection[x, y];
             if (b.Content != "Flaged")
@@ -190,22 +195,29 @@ namespace Saper
                     if ((i >= 0 && i < ColumnCount) && (j < ColumnCount && j >= 0))
                     {
                         int index = Buttons.FindIndex(0, Buttons.Count - 1,
-                                    button => button.Name == string.Format("B_{0}{1}", i, j));
+                                    button => button.Name == string.Format("B_{0}_{1}", i, j));
                         if (index < 0)
                         {
                             index = Convert.ToInt32(string.Format("" + i + j));
                         }
-                        Buttons[index].Background = Brushes.White;
-                        Buttons[index].Foreground = Brushes.Black;
-                        if (FindMinesAround(i, j) > 0)
-                            Buttons[index].Content = FindMinesAround(i, j);
+                        if (Buttons[index].Content != "Flaged")
+                        {
+                            Buttons[index].Background = Brushes.White;
+                            Buttons[index].Foreground = Brushes.Black;
+                            if (FindMinesAround(i, j) > 0)
+                                Buttons[index].Content = FindMinesAround(i, j);
+                        }
                     }
                 }
             }
         }
 
-        private void Win()
+        private void CheckWinCondition()
         {
+            foreach (bool min in MineCollection)
+            {
+                
+            }
             MessageBox.Show("You win.\nCongratulations.");
         }
 
@@ -216,12 +228,12 @@ namespace Saper
             MineCollection = new bool[ColumnCount, ColumnCount];
             for (int i = 0; i < MinesCount; i++)
             {
-                int r1 = randomMinePlace.Next(DateTime.Now.Millisecond % ColumnCount);
-                int r2 = randomMinePlace.Next(DateTime.Now.Millisecond % ColumnCount);
+                int r1 = RandomMinePlace.Next(DateTime.Now.Millisecond % ColumnCount);
+                int r2 = RandomMinePlace.Next(DateTime.Now.Millisecond % ColumnCount);
                 while (!AddMine(r1, r2))
                 {
-                    r1 = randomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
-                    r2 = randomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
+                    r1 = RandomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
+                    r2 = RandomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
                 }
             }
         }
