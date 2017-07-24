@@ -22,7 +22,7 @@ namespace Saper
         public int ColumnCount = 0;
         public int MinesCount = 0;
         public Random RandomMinePlace = new Random();
-        public List<string> FlagedMines = new List<string>();
+        public List<string> FlaggedMines = new List<string>();
 
         #endregion
 
@@ -113,15 +113,15 @@ namespace Saper
             var xy = b.Name.Substring(2, b.Name.Length - 2).Split('_').ToArray();
             if (e.ChangedButton == MouseButton.Right && b.Content == null && b.Background != Brushes.White)
             {
-                b.Content = "Flaged";
-                FlagedMines.Add(string.Format("B_{0}_{1}", xy[0], xy[1]));
+                b.Content = "Flagged";
+                FlaggedMines.Add(string.Format("{0}_{1}", xy[0], xy[1]));
                 MinesCount--;
                 MinesToFindTextBlock.Text = "Mines to find = " + MinesCount;
             }
-            else if (e.ChangedButton == MouseButton.Right && b.Content == "Flaged")
+            else if (e.ChangedButton == MouseButton.Right && b.Content == "Flagged")
             {
                 b.Content = null;
-                FlagedMines.Remove(string.Format("B_{0}_{1}", xy[0], xy[1]));
+                FlaggedMines.Remove(string.Format("{0}_{1}", xy[0], xy[1]));
                 MinesCount++;
                 MinesToFindTextBlock.Text = "Mines to find = " + MinesCount;
             }
@@ -137,7 +137,7 @@ namespace Saper
             int y = Convert.ToInt32(xy[1]);
             var hasMine =
                 MineCollection[x, y];
-            if (b.Content != "Flaged")
+            if (b.Content != "Flagged")
             {
                 if (hasMine)
                 {
@@ -200,7 +200,7 @@ namespace Saper
                         {
                             index = Convert.ToInt32(string.Format("" + i + j));
                         }
-                        if (Buttons[index].Content != "Flaged")
+                        if (Buttons[index].Content != "Flagged")
                         {
                             Buttons[index].Background = Brushes.White;
                             Buttons[index].Foreground = Brushes.Black;
@@ -214,11 +214,20 @@ namespace Saper
 
         private void CheckWinCondition()
         {
-            foreach (bool min in MineCollection)
+            bool wrongFlag = false;
+            foreach (string flagged in FlaggedMines)
             {
-                
+                var xy = flagged.Split('_').ToArray();
+                int x = Convert.ToInt32(xy[0]);
+                int y = Convert.ToInt32(xy[1]);
+                if (MineCollection[x, y] != true)
+                {
+                    wrongFlag = true;
+                    break;
+                }
             }
-            MessageBox.Show("You win.\nCongratulations.");
+            if(!wrongFlag)
+                MessageBox.Show("You win.\nCongratulations.");
         }
 
         private void PlaceMines()
