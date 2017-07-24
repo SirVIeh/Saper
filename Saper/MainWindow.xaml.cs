@@ -111,7 +111,7 @@ namespace Saper
         {
             Button b = (Button)sender;
             var xy = b.Name.Substring(2, b.Name.Length - 2).Split('_').ToArray();
-            if (e.ChangedButton == MouseButton.Right && b.Content == null && b.Background != Brushes.White)
+            if (e.ChangedButton == MouseButton.Right && b.Content == null && b.Background != Brushes.White && MinesCount > 0)
             {
                 b.Content = "Flagged";
                 FlaggedMines.Add(string.Format("{0}_{1}", xy[0], xy[1]));
