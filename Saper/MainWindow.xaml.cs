@@ -25,6 +25,7 @@ namespace Saper
         public Random RandomMinePlace = new Random();
         public List<string> FlaggedMines = new List<string>();
         public List<Button> uncoveredButtons = new List<Button>();
+        public string backgroundBrush;
 
         #endregion
 
@@ -358,5 +359,49 @@ namespace Saper
         }
 
         #endregion
+
+        private void Color_Click(object sender, RoutedEventArgs e)
+        {
+            CheckBox cb = (CheckBox)sender;
+            switch (cb.Content.ToString())
+            {
+                case "Red":
+                    foreach (Button button in Buttons)
+                    {
+                        button.Background = Brushes.Red;
+                    }
+                    break;
+                case "Green":
+                    foreach (Button button in Buttons)
+                    {
+                        button.Background = Brushes.Green;
+                    }
+                    break;
+                case "Blue":
+                    foreach (Button button in Buttons)
+                    {
+                        button.Background = Brushes.Blue;
+                    }
+                    break;
+                case "Orange":
+                    foreach (Button button in Buttons)
+                    {
+                        button.Background = Brushes.OrangeRed;
+                    }
+                    break;
+                case "Purple":
+                    foreach (Button button in Buttons)
+                    {
+                        button.Background = Brushes.Purple;
+                    }
+                    break;
+                case "Black":
+                    foreach (Button button in Buttons)
+                    {
+                        button.Background = Brushes.Black;
+                    }
+                    break;
+            }
+        }
     }
 }
