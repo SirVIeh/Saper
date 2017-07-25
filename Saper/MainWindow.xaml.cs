@@ -48,6 +48,7 @@ namespace Saper
                 MainGrid.ColumnDefinitions.RemoveRange(0, MainGrid.ColumnDefinitions.Count - 1);
             }
             Buttons.Clear();
+            FlaggedMines.Clear();
             ColumnCount = 0;
 
             #endregion
@@ -137,7 +138,7 @@ namespace Saper
             int y = Convert.ToInt32(xy[1]);
             var hasMine =
                 MineCollection[x, y];
-            if (b.Content != "Flagged")
+            if (b.Content == null)
             {
                 if (hasMine)
                 {
@@ -155,6 +156,50 @@ namespace Saper
                         b.Content = minesAround;
                 }
             }
+            else if (b.Content != "Flagged")
+            {
+                var minesCount = Convert.ToInt32(b.Content);
+                if (CheckIfCorrectlyFlagged(x, y))
+                {
+                    int minesAround = FindMinesAround(x, y);
+                    ShowAllNearEmptyFields(x, y);
+                    b.Background = Brushes.White;
+                    b.Foreground = Brushes.Black;
+                    if (minesAround > 0)
+                        b.Content = minesAround;
+                }
+            }
+        }
+
+        private bool CheckIfCorrectlyFlagged(int x, int y)
+        {
+            int minesAround = 0;
+            for (int i = x - 1; i <= x + 1; i++)
+            {
+                for (int j = y - 1; j <= y + 1; j++)
+                {
+                    if ((i >= 0 && i < ColumnCount) && (j < ColumnCount && j >= 0))
+                    {
+                        int index = Buttons.FindIndex(0, Buttons.Count - 1,
+                                    button => button.Name == string.Format("B_{0}_{1}", i, j));
+                        if (index < 0)
+                        {
+                            index = Convert.ToInt32(string.Format("" + i + j));
+                        }
+                        if (MineCollection[i, j] && Buttons[index].Content == "Flagged")
+                        {
+                            minesAround++;
+                        }
+                    }
+                }
+            }
+            int idx = Buttons.FindIndex(0, Buttons.Count - 1,
+                                    button => button.Name == string.Format("B_{0}_{1}", x, y));
+            if (minesAround == Convert.ToInt32(Buttons[idx].Content))
+            {
+                return true;
+            }
+            return false;
         }
 
         private void Difficulty_onClick(object sender, RoutedEventArgs e)
