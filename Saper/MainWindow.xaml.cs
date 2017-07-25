@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -293,17 +294,29 @@ namespace Saper
 
         private void PlaceMines()
         {
-            MinesCount = ColumnCount*2;
+            if(Difficulty == Level.Easy)
+                MinesCount = ColumnCount * 2;
+            else if(Difficulty == Level.Medium)
+                MinesCount = ColumnCount * 2 + 10;
+            else
+            {
+                MinesCount = ColumnCount * 3;
+            }
+            
             MinesToFindTextBlock.Text = "Mines to find = " + MinesCount;
             MineCollection = new bool[ColumnCount, ColumnCount];
             for (int i = 0; i < MinesCount; i++)
             {
-                int r1 = RandomMinePlace.Next(DateTime.Now.Millisecond % ColumnCount);
-                int r2 = RandomMinePlace.Next(DateTime.Now.Millisecond % ColumnCount);
+                int r1 = RandomMinePlace.Next() % ColumnCount;
+                Thread.Sleep(12);
+                int r2 = RandomMinePlace.Next() % ColumnCount;
+                Thread.Sleep(12);
                 while (!AddMine(r1, r2))
                 {
-                    r1 = RandomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
-                    r2 = RandomMinePlace.Next((DateTime.Now.Millisecond + i) % ColumnCount);
+                    r1 = RandomMinePlace.Next() % ColumnCount;
+                    Thread.Sleep(12);
+                    r2 = RandomMinePlace.Next() % ColumnCount;
+                    Thread.Sleep(12);
                 }
             }
         }
