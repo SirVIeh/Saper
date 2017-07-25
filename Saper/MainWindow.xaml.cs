@@ -23,6 +23,7 @@ namespace Saper
         public int MinesCount = 0;
         public Random RandomMinePlace = new Random();
         public List<string> FlaggedMines = new List<string>();
+        public List<Button> uncoveredButtons = new List<Button>();
 
         #endregion
 
@@ -49,6 +50,7 @@ namespace Saper
             }
             Buttons.Clear();
             FlaggedMines.Clear();
+            uncoveredButtons.Clear();
             ColumnCount = 0;
 
             #endregion
@@ -149,7 +151,10 @@ namespace Saper
                 {
                     int minesAround = FindMinesAround(x, y);
                     if (minesAround == 0)
+                    {
+                        uncoveredButtons.Add(b);
                         ShowAllNearEmptyFields(x, y);
+                    }
                     b.Background = Brushes.White;
                     b.Foreground = Brushes.Black;
                     if (minesAround > 0)
@@ -230,6 +235,7 @@ namespace Saper
 
         private void ShowAllNearEmptyFields(int x, int y)
         {
+            List<Button> ToUncover = new List<Button>();
             for (int i = x - 1; i <= x + 1; i++)
             {
                 for (int j = y - 1; j <= y + 1; j++)
@@ -238,15 +244,31 @@ namespace Saper
                     {
                         int index = Buttons.FindIndex(0, Buttons.Count,
                                     button => button.Name == string.Format("B_{0}_{1}", i, j));
+                        int idx = Buttons.FindIndex(0, Buttons.Count,
+                            button => button.Name == string.Format("B_{0}_{1}", x, y));
 
                         if (Buttons[index].Content != "Flagged")
                         {
+                            if (Buttons[idx].Name != Buttons[index].Name)
+                                ToUncover.Add(Buttons[index]);
                             Buttons[index].Background = Brushes.White;
                             Buttons[index].Foreground = Brushes.Black;
                             if (FindMinesAround(i, j) > 0)
                                 Buttons[index].Content = FindMinesAround(i, j);
                         }
                     }
+                }
+            }
+            UncoverRestButtons(ToUncover);
+        }
+
+        public void UncoverRestButtons(List<Button> ToUncover)
+        {
+            foreach (Button ub in ToUncover)
+            {
+                if (ub.Content == null && uncoveredButtons.FindIndex(0, uncoveredButtons.Count, button => button.Name == ub.Name) < 0)
+                {
+                    button_Click(ub, null);
                 }
             }
         }
