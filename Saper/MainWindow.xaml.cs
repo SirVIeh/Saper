@@ -180,12 +180,9 @@ namespace Saper
                 {
                     if ((i >= 0 && i < ColumnCount) && (j < ColumnCount && j >= 0))
                     {
-                        int index = Buttons.FindIndex(0, Buttons.Count - 1,
+                        int index = Buttons.FindIndex(0, Buttons.Count,
                                     button => button.Name == string.Format("B_{0}_{1}", i, j));
-                        if (index < 0)
-                        {
-                            index = Convert.ToInt32(string.Format("" + i + j));
-                        }
+
                         if (MineCollection[i, j] && Buttons[index].Content == "Flagged")
                         {
                             minesAround++;
@@ -193,7 +190,7 @@ namespace Saper
                     }
                 }
             }
-            int idx = Buttons.FindIndex(0, Buttons.Count - 1,
+            int idx = Buttons.FindIndex(0, Buttons.Count,
                                     button => button.Name == string.Format("B_{0}_{1}", x, y));
             if (minesAround == Convert.ToInt32(Buttons[idx].Content))
             {
@@ -239,12 +236,9 @@ namespace Saper
                 {
                     if ((i >= 0 && i < ColumnCount) && (j < ColumnCount && j >= 0))
                     {
-                        int index = Buttons.FindIndex(0, Buttons.Count - 1,
+                        int index = Buttons.FindIndex(0, Buttons.Count,
                                     button => button.Name == string.Format("B_{0}_{1}", i, j));
-                        if (index < 0)
-                        {
-                            index = Convert.ToInt32(string.Format("" + i + j));
-                        }
+
                         if (Buttons[index].Content != "Flagged")
                         {
                             Buttons[index].Background = Brushes.White;
