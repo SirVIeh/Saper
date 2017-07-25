@@ -25,7 +25,7 @@ namespace Saper
         public Random RandomMinePlace = new Random();
         public List<string> FlaggedMines = new List<string>();
         public List<Button> uncoveredButtons = new List<Button>();
-        public string backgroundBrush;
+        public string backgroundBrush = "Black";
 
         #endregion
 
@@ -98,7 +98,18 @@ namespace Saper
                     Grid.SetColumn(button, j);
                     button.Click += button_Click;
                     button.MouseUp += button_MouseUp;
-                    button.Background = Brushes.Black;
+                    if(backgroundBrush == "Red")
+                        button.Background = Brushes.Red;
+                    if(backgroundBrush == "Green")
+                        button.Background = Brushes.Green;
+                    if(backgroundBrush == "Blue")
+                        button.Background = Brushes.Blue;
+                    if(backgroundBrush == "Orange")
+                        button.Background = Brushes.OrangeRed;
+                    if(backgroundBrush == "Purple")
+                        button.Background = Brushes.Purple;
+                    if(backgroundBrush == "Black")
+                        button.Background = Brushes.Black;
                     button.Foreground = Brushes.White;
                     Buttons.Add(button);
                     MainGrid.Children.Add(button);
@@ -362,44 +373,56 @@ namespace Saper
 
         private void Color_Click(object sender, RoutedEventArgs e)
         {
-            CheckBox cb = (CheckBox)sender;
+            Button cb = (Button)sender;
             switch (cb.Content.ToString())
             {
                 case "Red":
                     foreach (Button button in Buttons)
                     {
-                        button.Background = Brushes.Red;
+                        if(button.Background != Brushes.White)
+                            button.Background = Brushes.Red;
                     }
+                    backgroundBrush = "Red";
                     break;
                 case "Green":
                     foreach (Button button in Buttons)
                     {
-                        button.Background = Brushes.Green;
+                        if (button.Background != Brushes.White)
+                            button.Background = Brushes.Green;
                     }
+                    backgroundBrush = "Green";
                     break;
                 case "Blue":
                     foreach (Button button in Buttons)
                     {
-                        button.Background = Brushes.Blue;
+                        if (button.Background != Brushes.White)
+                            button.Background = Brushes.Blue;
                     }
+                    backgroundBrush = "Blue";
                     break;
                 case "Orange":
                     foreach (Button button in Buttons)
                     {
-                        button.Background = Brushes.OrangeRed;
+                        if (button.Background != Brushes.White)
+                            button.Background = Brushes.OrangeRed;
                     }
+                    backgroundBrush = "Orange";
                     break;
                 case "Purple":
                     foreach (Button button in Buttons)
                     {
-                        button.Background = Brushes.Purple;
+                        if (button.Background != Brushes.White)
+                            button.Background = Brushes.Purple;
                     }
+                    backgroundBrush = "Purple";
                     break;
                 case "Black":
                     foreach (Button button in Buttons)
                     {
-                        button.Background = Brushes.Black;
+                        if (button.Background != Brushes.White)
+                            button.Background = Brushes.Black;
                     }
+                    backgroundBrush = "Black";
                     break;
             }
         }

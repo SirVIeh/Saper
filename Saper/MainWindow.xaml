@@ -4,7 +4,7 @@
         Title="MainWindow" Height="900" Width="900" Background="DarkGray" Loaded="MainWindow_OnLoaded">
 
 
-    <Grid>
+    <Grid Name="MainWindowGrid">
         <DockPanel Height="20" VerticalAlignment="Top">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Click="NewGame_onClick"  Header="_New Game"></MenuItem>
@@ -16,12 +16,12 @@
             </Menu>
         </DockPanel>
         <ComboBox Name="ColorsComboBox" Height="15" Width="100" Margin="2" VerticalAlignment="Top" HorizontalAlignment="Center" >
-            <CheckBox Content="Red" Foreground="#FFC30000" Click="Color_Click"/>
-            <CheckBox Content="Green" Foreground="#FF25FF03" Click="Color_Click"/>
-            <CheckBox Content="Blue" Foreground="#FF0037F3" Click="Color_Click"/>
-            <CheckBox Content="Orange" Foreground="#FFF06200" Click="Color_Click"/>
-            <CheckBox Content="Purple" Foreground="#FF5D00FF" Click="Color_Click"/>
-            <CheckBox Content="Black" Click="Color_Click"/>
+            <Button Content="Red" Foreground="#FFC30000" Click="Color_Click" Width="90"/>
+            <Button Content="Green" Foreground="#FF25FF03" Click="Color_Click" Width="90"/>
+            <Button Content="Blue" Foreground="#FF0037F3" Click="Color_Click" Width="90"/>
+            <Button Content="Orange" Foreground="#FFF06200" Click="Color_Click" Width="90"/>
+            <Button Content="Purple" Foreground="#FF5D00FF" Click="Color_Click" Width="90"/>
+            <Button Content="Black" Click="Color_Click" Width="90"/>
         </ComboBox>
         <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Center" Text="Change color ->" Margin="0,0,200,0"/>
         <Grid Name="MainGrid" VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="800" Width="800" Margin="0,0,0,30"></Grid>
