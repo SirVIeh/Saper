@@ -40,6 +40,9 @@ namespace Saper
 
         #region Draw Level
 
+        /// <summary>
+        /// Adding all elements to game level
+        /// </summary>
         public void DrawLevel()
         {
             #region Clearing Level
@@ -123,6 +126,11 @@ namespace Saper
 
         #region Mouse Events
 
+        /// <summary>
+        /// Event to set up flag
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void button_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Button b = (Button)sender;
@@ -145,6 +153,11 @@ namespace Saper
                 CheckWinCondition();
         }
 
+        /// <summary>
+        /// event to open a field
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void button_Click(object sender, RoutedEventArgs e)
         {
             Button b = (Button) sender;
@@ -189,6 +202,12 @@ namespace Saper
             }
         }
 
+        /// <summary>
+        /// Checking if all that are flagged are correctly flagged
+        /// </summary>
+        /// <param name="x">x field coordinate</param>
+        /// <param name="y">y field coordinate</param>
+        /// <returns></returns>
         private bool CheckIfCorrectlyFlagged(int x, int y)
         {
             int minesAround = 0;
@@ -217,6 +236,11 @@ namespace Saper
             return false;
         }
 
+        /// <summary>
+        /// Changing difficulty level
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Difficulty_onClick(object sender, RoutedEventArgs e)
         {
             var difChoice = (MenuItem)sender;
@@ -237,6 +261,11 @@ namespace Saper
             DrawLevel();
         }
 
+        /// <summary>
+        /// Starting new game
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NewGame_onClick(object sender, RoutedEventArgs e)
         {
             DrawLevel();
@@ -246,6 +275,11 @@ namespace Saper
 
         #region Private Methods
 
+        /// <summary>
+        /// Opening all empty fields around clicked one if possible
+        /// </summary>
+        /// <param name="x">x field coordinate</param>
+        /// <param name="y">y field coordinate</param>
         private void ShowAllNearEmptyFields(int x, int y)
         {
             List<Button> ToUncover = new List<Button>();
@@ -275,6 +309,10 @@ namespace Saper
             UncoverRestButtons(ToUncover);
         }
 
+        /// <summary>
+        /// Uncovering more empty buttons if next to each other
+        /// </summary>
+        /// <param name="ToUncover"></param>
         public void UncoverRestButtons(List<Button> ToUncover)
         {
             foreach (Button ub in ToUncover)
@@ -286,6 +324,9 @@ namespace Saper
             }
         }
 
+        /// <summary>
+        /// Checking if the game is alreade won
+        /// </summary>
         private void CheckWinCondition()
         {
             bool wrongFlag = false;
@@ -304,6 +345,9 @@ namespace Saper
                 MessageBox.Show("You win.\nCongratulations.");
         }
 
+        /// <summary>
+        /// Placing mines at random places
+        /// </summary>
         private void PlaceMines()
         {
             if(Difficulty == Level.Easy)
@@ -333,6 +377,12 @@ namespace Saper
             }
         }
 
+        /// <summary>
+        /// Chacking how many mines are around a field to add it's number on the field
+        /// </summary>
+        /// <param name="x">x field coordinate</param>
+        /// <param name="y">y field coordinate</param>
+        /// <returns></returns>
         private int FindMinesAround(int x, int y)
         {
             int minesAround = 0;
@@ -350,6 +400,12 @@ namespace Saper
             return minesAround;
         }
 
+        /// <summary>
+        /// Adding mines to specified field in parameters
+        /// </summary>
+        /// <param name="r1">filed coordinate</param>
+        /// <param name="r2">filed coordinate</param>
+        /// <returns></returns>
         private bool AddMine(int r1, int r2)
         {
             if (MineCollection[r1, r2] == false)
@@ -364,6 +420,11 @@ namespace Saper
 
         #region On Loaded
 
+        /// <summary>
+        /// Starting game when window loads
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             DrawLevel();
@@ -371,6 +432,11 @@ namespace Saper
 
         #endregion
 
+        /// <summary>
+        /// Changing fileds color
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Color_Click(object sender, RoutedEventArgs e)
         {
             Button cb = (Button)sender;
