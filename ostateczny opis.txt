@@ -1,0 +1,14 @@
+Autor: Mieszko Sul¿ycki
+Temat: Saper
+Technologia: WPF
+
+Opis:
+
+W sumie ostateczny opis móg³by byæ kopi¹ wstêpnego opisu.
+Wszystkie cele zosta³y zrealizowane.
+
+Cele:
+
+- mo¿liwoœæ wybrania poziomu trudnoœci
+- na bierz¹co informacja o iloœci pozosta³ych min
+- zmiana koloru t³a w oknie gry
